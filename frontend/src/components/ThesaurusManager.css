@@ -1,0 +1,104 @@
+.thesaurus-manager {
+  padding: 20px;
+  background: #f9f9ff;
+  border-radius: 8px;
+}
+.thesaurus-manager section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+}
+.thesaurus-manager h3 {
+  margin-bottom: 12px;
+  color: #333;
+}
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.search-bar input {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+}
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.results-table th, .results-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+}
+.form-group input, .form-group textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #5a67d8;
+}
+.message {
+  margin-top: 15px;
+  padding: 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 4px;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a5568;
+  transition: all 0.2s;
+}
+
+.edit-btn:hover {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.secondary {
+  background-color: #6c757d;
+}
+.secondary:hover {
+  background-color: #5a6268;
+}
+.edit-btn {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.edit-btn:hover {
+  background: #f0f0f0;
+}
