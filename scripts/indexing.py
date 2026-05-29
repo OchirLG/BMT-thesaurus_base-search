@@ -8,6 +8,8 @@ import torch
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
+import argparse
+
 config = Config()
 
 
@@ -162,18 +164,30 @@ def process_rounds(data_df, thesaurus_full_df, thesaurus_emb_df, emb_matrix, mod
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Получение определений эмбеддингов терминов")
+
+    parser.add_argument("--corpus_path", type=str, default="data/data2indexing_small_clean.parquet",
+                        help="Путь к исходному parquet")
+    parser.add_argument("--thesaurus_path", type=str, default="thesaurus_data/thesaurus_deduplicated_final.parquet",
+                        help="Путь для тезауруса")
+    parser.add_argument("--output_path", type=str, default="data/indexed_rounds_small_finalv2.parquet",
+                        help="Путь для индексированного корпуса")
+    parser.add_argument("--unmatched_path", type=str, default="data/unmatched_termsv2.csv",
+                        help="Путь для unmatched терминов")
+    
+    args = parser.parse_args()
     # Параметры путей
-    corpus_path = "data/data2indexing_small_clean.parquet"
-    thesaurus_path = "thesaurus_data/thesaurus_deduplicated_final.parquet"
-    output_path = "data/indexed_rounds_small_finalv2.parquet"
-    unmatched_csv = "data/unmatched_termsv2.csv"
+    #corpus_path = "data/data2indexing_small_clean.parquet"
+    #thesaurus_path = "thesaurus_data/thesaurus_deduplicated_final.parquet"
+    #output_path = "data/indexed_rounds_small_finalv2.parquet"
+    #unmatched_csv = "data/unmatched_termsv2.csv"
 
     print("Загрузка корпуса...")
-    corpus_df = pd.read_parquet(corpus_path)
+    corpus_df = pd.read_parquet(args.corpus_path)
     print(f"Корпус содержит {len(corpus_df)} записей.")
 
     print("Загрузка тезауруса и эмбеддингов...")
-    thesaurus_full, thesaurus_emb, emb_matrix = load_thesaurus_with_embeddings(thesaurus_path)
+    thesaurus_full, thesaurus_emb, emb_matrix = load_thesaurus_with_embeddings(args.thesaurus_path)
     print(f"Тезаурус: {len(thesaurus_full)} терминов, из них с эмбеддингами: {len(thesaurus_emb)}")
 
     # Загружаем модель эмбеддингов
@@ -186,15 +200,15 @@ def main():
     result_df = process_rounds(corpus_df, thesaurus_full, thesaurus_emb, emb_matrix, model)
 
     # Сохраняем результат
-    result_df.to_parquet(output_path, index=False)
-    print(f"Сохранено в {output_path}")
+    result_df.to_parquet(args.output_path, index=False)
+    print(f"Сохранено в {args.output_path}")
 
     # Сохраняем все уникальные неподходящие термины в CSV
     unmatched_series = result_df['unmatched_terms'].explode().dropna()
     if len(unmatched_series) > 0:
         unique_unmatched = pd.Series(unmatched_series.unique())
-        unique_unmatched.to_csv(unmatched_csv, index=False, header=False)
-        print(f"{len(unique_unmatched)} уникальных терминов без соответствия сохранены в {unmatched_csv}")
+        unique_unmatched.to_csv(args.unmatched_path, index=False, header=False)
+        print(f"{len(unique_unmatched)} уникальных терминов без соответствия сохранены в {args.unmatched_path}")
     else:
         print("Все извлечённые термины успешно сопоставлены!")
 

@@ -8,6 +8,8 @@ import pandas as pd
 from utils.splitter import chunk_text_by_sentences
 from scripts.config import Config
 
+import argparse
+
 stemmer = SnowballStemmer("russian")
 config = Config()
 
@@ -139,12 +141,21 @@ def get_terms_df(path2data: str) -> pd.DataFrame:
     return df
 
 if __name__ == "__main__":
-    path2data = "data/data2thesaurus.parquet"
-    path2save = "thesaurus_data/thesaurus_ctx_final.parquet"
+    parser = argparse.ArgumentParser(description="Получение терминов")
 
-    df = get_terms_df(path2data)
+    parser.add_argument("--input", type=str, default="data/data2thesaurus.parquet",
+                        help="Путь к исходному parquet с колонкой 'descr'")
+    parser.add_argument("--output", type=str, default="thesaurus_data/thesaurus_ctx_final.parquet",
+                        help="Путь для сохранения результата")
+   
+    args = parser.parse_args()
 
-    df.to_parquet(path2save)
-    print(f"Результат сохранен по пути: {path2save}")
+    # path2data = "data/data2thesaurus.parquet"
+    # path2save = "thesaurus_data/thesaurus_ctx_final.parquet"
+
+    df = get_terms_df(args.input)
+
+    df.to_parquet(args.output)
+    print(f"Результат сохранен по пути: {args.output}")
 
     

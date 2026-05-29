@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 from pathlib import Path
+import argparse
 
 def normalize_term(term: str) -> str:
     """Нормализует термин для сравнения (удаляет пунктуацию, приводит к нижнему регистру)."""
@@ -66,18 +67,29 @@ def add_terms_to_thesaurus(thesaurus_path: str, new_terms: set, output_path: str
     return df_updated
 
 def main():
-    INDEXED_DATA_PATH = "data/indexed_rounds_small_final.parquet"
-    THESAURUS_PATH = "thesaurus_data/thesaurus_deduplicated_final.parquet"
-    OUTPUT_THESAURUS_PATH = "thesaurus_data/thesaurus_with_unmatched_final.parquet"
+    parser = argparse.ArgumentParser(description="Удаление дубликатов")
+
+    parser.add_argument("--data_path", type=str, default="data/indexed_rounds_small_final.parquet",
+                        help="Путь для индексированного корпуса")
+    parser.add_argument("--thesaurus_path", type=str, default="thesaurus_data/thesaurus_deduplicated_final.parquet",
+                        help="Путь для тезауруса")
+    parser.add_argument("--output_path", type=str, default="thesaurus_data/thesaurus_with_unmatched_final.parquet",
+                        help="Путь для финального тезауруса")
+    
+    args = parser.parse_args()
+
+    # INDEXED_DATA_PATH = "data/indexed_rounds_small_final.parquet"
+    # THESAURUS_PATH = "thesaurus_data/thesaurus_deduplicated_final.parquet"
+    # OUTPUT_THESAURUS_PATH = "thesaurus_data/thesaurus_with_unmatched_final.parquet"
     
 
-    unmatched_terms = load_unmatched_terms(INDEXED_DATA_PATH)
+    unmatched_terms = load_unmatched_terms(args.data_path)
     
     if not unmatched_terms:
         print("Нет unmatched терминов. Ничего не делаем.")
         return
     
-    add_terms_to_thesaurus(THESAURUS_PATH, unmatched_terms, OUTPUT_THESAURUS_PATH)
+    add_terms_to_thesaurus(args.thesaurus_path, unmatched_terms, args.output_path)
     
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 
+import argparse
+
 def get_embeddings_optimized(df, model_name="intfloat/multilingual-e5-large", batch_size=64):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = SentenceTransformer(model_name, device=device)
@@ -33,16 +35,26 @@ def get_embeddings_optimized(df, model_name="intfloat/multilingual-e5-large", ba
     return df, embeddings_list
 
 if __name__ == "__main__":
-    path2data = "thesaurus_data/thesaurus_def_final.parquet"
-    path2save = "thesaurus_data/thesaurus_emb_final.parquet"
-    df = pd.read_parquet(path2data)
+
+    parser = argparse.ArgumentParser(description="Получение определений эмбеддингов терминов")
+
+    parser.add_argument("--input", type=str, default="thesaurus_data/thesaurus_def_final.parquet",
+                        help="Путь к исходному parquet с колонкой 'descr'")
+    parser.add_argument("--output", type=str, default="thesaurus_data/thesaurus_emb_final.parquet",
+                        help="Путь для сохранения результата")
+    
+    # path2data = "thesaurus_data/thesaurus_def_final.parquet"
+    # path2save = "thesaurus_data/thesaurus_emb_final.parquet"
+    args = parser.parse_args()
+
+    df = pd.read_parquet(args.input)
     df, embeddings = get_embeddings_optimized(df)
     
     df['embedding'] = embeddings
     
     df['has_embedding'] = df['embedding'].notna()
     
-    df.to_parquet(path2save, engine="pyarrow")
+    df.to_parquet(args.output, engine="pyarrow")
     
     # Информация о пропущенных
     missing_count = df['embedding'].isna().sum()

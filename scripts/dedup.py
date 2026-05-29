@@ -9,6 +9,8 @@ from typing import List, Tuple, Set
 from scripts.config import Config
 from scripts.get_terms import call_llm
 
+import argparse
+
 config = Config()
 
 
@@ -140,13 +142,22 @@ def deduplicate_with_llm(df, clusters, config, max_cluster_size=8):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Удаление дубликатов")
+
+    parser.add_argument("--thesaurus_path", type=str, default="thesaurus_data/thesaurus_emb_final.parquet",
+                        help="Путь для тезауруса")
+    parser.add_argument("--output_path", type=str, default="thesaurus_data/thesaurus_deduplicated_final.parquet",
+                        help="Путь для тезауруса без дубликатов")
+    
+    args = parser.parse_args()
+
     # Пути к файлам
-    PATH_INPUT = "thesaurus_data/thesaurus_emb_final.parquet"
-    PATH_OUTPUT = "thesaurus_data/thesaurus_deduplicated_final.parquet"
+    # PATH_INPUT = "thesaurus_data/thesaurus_emb_final.parquet"
+    # PATH_OUTPUT = "thesaurus_data/thesaurus_deduplicated_final.parquet"
     SIMILARITY_THRESHOLD = 0.95 
     
     # Загрузка
-    df = pd.read_parquet(PATH_INPUT)
+    df = pd.read_parquet(args.thesaurus_path)
     print(f"Загружено строк: {len(df)}")
     
    
@@ -158,7 +169,7 @@ def main():
     
     if not candidate_pairs:
         print("Нет пар выше порога. Сохраняем без изменений.")
-        df.to_parquet(PATH_OUTPUT, engine="pyarrow")
+        df.to_parquet(args.output_path, engine="pyarrow")
         return
     
 
@@ -172,8 +183,8 @@ def main():
    
     df_dedup = df.drop(index=to_remove).reset_index(drop=True)
     print(f"Итоговое количество строк: {len(df_dedup)}")
-    df_dedup.to_parquet(PATH_OUTPUT, engine="pyarrow")
-    print(f"Сохранено в {PATH_OUTPUT}")
+    df_dedup.to_parquet(args.output_path, engine="pyarrow")
+    print(f"Сохранено в {args.output_path}")
 
 if __name__ == "__main__":
     main()

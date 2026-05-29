@@ -8,6 +8,8 @@ import re
 import re
 import yaml
 
+import argparse
+
 config = Config()
 
 with open('data/abbr2term.yaml', 'r', encoding='utf-8') as file:
@@ -134,17 +136,20 @@ def get_df(df: pd.DataFrame, step=1_000) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    path2data = "thesaurus_data/thesaurus_ctx_final.parquet"
-    path2save = "thesaurus_data/thesaurus_def_final.parquet"
+    parser = argparse.ArgumentParser(description="Получение определений терминов")
 
-    df = pd.read_parquet(path2save)
+    parser.add_argument("--input", type=str, default="data/data2thesaurus.parquet",
+                        help="Путь к исходному parquet с колонкой 'descr'")
+    parser.add_argument("--output", type=str, default="thesaurus_data/thesaurus_def_final.parquet",
+                        help="Путь для сохранения результата")
+   
+    args = parser.parse_args()
+    # path2data = "thesaurus_data/thesaurus_ctx_final.parquet"
+    # path2save = "thesaurus_data/thesaurus_def_final.parquet"
+
+    df = pd.read_parquet(args.input)
     df_def = get_df(df, step=200)
 
-    df_def.to_parquet(path2save)
+    df_def.to_parquet(args.output)
 
-    # res = df[df['term'] == 'ОМЛ']
-
-    # print(res)
-
-    # print(get_term_info(term=res['term'].item(), contexts=res['contexts'].item()))
-
+   
