@@ -74,7 +74,7 @@ function ThesaurusManager() {
       
       {/* Поиск терминов */}
       <section className="search-section">
-        <h3>🔍 Поиск терминов</h3>
+        <h3>Поиск терминов</h3>
         <div className="search-bar">
           <input
             type="text"

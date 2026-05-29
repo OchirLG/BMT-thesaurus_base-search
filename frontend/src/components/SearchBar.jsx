@@ -1,4 +1,3 @@
-// components/SearchBar.jsx
 import React, { useState } from 'react';
 import './SearchBar.css';
 
@@ -34,7 +33,6 @@ function SearchBar({ onSearch, onClear, isLoading, initialQuery, threshold, onTh
           disabled={isLoading}
         />
         
-        {/* Добавляем блок с ползунком порога */}
         <div className="threshold-control">
           <label htmlFor="threshold-slider">
             Минимальная релевантность: <strong>{(threshold * 100).toFixed(0)}%</strong>
