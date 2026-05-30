@@ -2,10 +2,14 @@
 .vscode
 *.parquet
 *.pdf
+*.csv
+*.yaml
 
 vector_store/
 chroma_db/
 models/
+
+scripts/indexing_old.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
